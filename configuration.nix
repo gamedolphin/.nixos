@@ -8,6 +8,27 @@ with lib;
 
 let
   user = "nambiar";
+  ld_path_libs = with pkgs; [
+    openssl_1_1
+    udev
+    alsa-lib
+    vulkan-loader
+    xorg.libX11
+    xorg.libXcursor
+    xorg.libXi
+    xorg.libXrandr # To use the x11 feature
+    libxkbcommon wayland # To use the wayland feature
+  ];
+
+  unityhub-local = (pkgs.callPackage ./unityhub { });
+  unityhub-rusty = unityhub-local.overrideAttrs (prevAttrs: {
+    nativeBuildInputs = (prevAttrs.nativeBuildInputs or []) ++ [ pkgs.makeWrapper pkgs.pkg-config ];
+    buildInputs = (prevAttrs.buildInputs or []) ++ ld_path_libs;
+
+    postInstall = prevAttrs.postInstall or "" + ''
+      wrapProgram "$out/bin/unityhub" --set LD_LIBRARY_PATH ${lib.makeLibraryPath ld_path_libs}
+    '';
+  });
 in
 {
   imports =
@@ -148,12 +169,25 @@ in
     davinci-resolve
     sway-contrib.grimshot
     steam-run
-    pkg-config
-    alsa-lib
     glibc
     gcc
     clang
     clang-tools
+    bear
+    (unityhub-rusty.override {
+      extraLibs = pkgs: with pkgs; [
+        openssl_1_1
+        pkg-config
+        udev
+        alsa-lib
+        vulkan-loader
+        xorg.libX11
+        xorg.libXcursor
+        xorg.libXi
+        xorg.libXrandr # To use the x11 feature
+        libxkbcommon wayland # To use the wayland feature
+      ];
+    })
   ];
 
   environment.sessionVariables = {

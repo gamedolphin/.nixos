@@ -11,11 +11,6 @@ in
   home.stateVersion = "23.05";
 
   home.packages = with pkgs; [
-    (unityhub.override {
-      extraLibs = pkgs: with pkgs; [
-        openssl_1_1
-      ];
-    })
     xdg-utils
     vlc
     discord
@@ -58,16 +53,16 @@ in
       genericName = "Todos";
       exec = "everdo";
       terminal = false;
-      categories = [ "Office" ];    
+      categories = [ "Office" ];
     };
   };
-  
+
   services.dunst.enable = true;
   services.swayidle.enable = true;
 
   programs = {
     direnv = {
-      enable = true;      
+      enable = true;
       enableZshIntegration = true;
       nix-direnv.enable = true;
     };

@@ -22,7 +22,7 @@
   (byte-compile-warnings '(not obsolete) "Ignore warnings for (obsolete) elisp compilations.")
   (warning-suppress-log-types '((comp) (bytecomp)) "And other log types completely.")
   (large-file-warning-threshold 100000000 "Large files are okay in the new millenium.")
-  (read-process-output-max (max 65536 read-process-output-max) "Read upto 64K (or max) based on system pipe capacity")
+  (read-process-output-max (max (* 1024 1024) read-process-output-max) "Read upto 1mb (or max) based on system pipe capacity")
   ;; scrolling configuration
   (scroll-margin 0 "Lets scroll to the end of the margin.")
   (scroll-conservatively 100000 "Never recenter the window.")
@@ -48,8 +48,6 @@
   ;; tabs
   (tab-width 4 "Always tab 4 spaces.")
   (indent-tabs-mode nil "Never use actual tabs.")
-  ;; desktop save path
-  (desktop-path '("~/.emacs.d/.cache/"))
 
   :init
   (global-auto-revert-mode t)          ;; revert automatically on external file changes
@@ -75,9 +73,6 @@
   (set-language-environment   'utf-8)
 
   (set-frame-font "Iosevka Semibold 12" nil t) ;; font of the century
-
-  (desktop-save-mode)
-  (desktop-read)
 
   :hook
   (before-save . whitespace-cleanup)
@@ -144,10 +139,12 @@
   (avy-background t))
 
 (use-package orderless
-  :defer t
-  :custom
-  (completion-styles '(orderless basic))
-  (completion-category-overrides '((file (styles basic partial-completion)))))
+  :init
+  ;; Tune the global completion style settings to your liking!
+  ;; This affects the minibuffer and non-lsp completion at point.
+  (setq completion-styles '(orderless partial-completion basic)
+        completion-category-defaults nil
+        completion-category-overrides nil))
 
 (use-package ag :defer t)
 
@@ -218,7 +215,7 @@
 (use-package corfu
   :custom
   (corfu-cycle t)
-  (corfu-auto t)
+  (corfu-auto nil)
   (corfu-separator ?_)
   :init
   (global-corfu-mode))
@@ -283,14 +280,22 @@
   :bind-keymap
   ("C-c l" . lsp-command-map)
   :custom
+  (lsp-lens-enable nil)
+  (lsp-idle-delay 0.500)
   (lsp-modeline-code-actions-enable nil)
   (lsp-modeline-diagnostics-enable nil)
   (lsp-csharp-omnisharp-roslyn-binary-path "OmniSharp")
   (lsp-completion-provider :none) ;; we use Corfu!
   :init
+   (defun my/orderless-dispatch-flex-first (_pattern index _total)
+    (and (eq index 0) 'orderless-flex))
+
   (defun my/lsp-mode-setup-completion ()
     (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults))
-          '(orderless))) ;; Configure orderless
+          '(orderless)))
+
+  ;; Optionally configure the first word as flex filtered.
+  (add-hook 'orderless-style-dispatchers #'my/orderless-dispatch-flex-first nil 'local)
 
   ;; Optionally configure the cape-capf-buster.
   (setq-local completion-at-point-functions (list (cape-capf-buster #'lsp-completion-at-point)))
