@@ -37,6 +37,11 @@
           inherit system;
           modules = common_modules ++ [./devhub-pc.nix];
         };
+
+        laptopdell= lib.nixosSystem {
+          inherit system;
+          modules = common_modules ++ [./laptop-dell.nix];
+        };
       };
     };
 }

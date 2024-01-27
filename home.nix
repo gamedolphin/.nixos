@@ -227,11 +227,6 @@ in
       target = ".config/hypr/hyprland.conf";
     };
 
-    hyprland-custom = {
-      source = ./hyprland-custom.conf;
-      target = ".config/hypr/hardware.conf";
-    };
-
     tofi = {
       source = ./tofi-config;
       target = ".config/tofi/config";

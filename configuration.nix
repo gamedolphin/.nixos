@@ -166,7 +166,7 @@ in
     cmake
     gnumake
     udiskie
-    (ollama.override { llama-cpp = (llama-cpp.override {cudaSupport = true; openblasSupport = false; }); })
+    (ollama.override { llama-cpp = (llama-cpp.override {cudaSupport = true; }); })
     handbrake
     davinci-resolve
     sway-contrib.grimshot
@@ -220,7 +220,6 @@ in
   programs = {
     hyprland = {
       enable = true;
-      enableNvidiaPatches = true;
       xwayland.enable = true;
     };
 
