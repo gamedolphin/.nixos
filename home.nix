@@ -39,8 +39,8 @@ in
     pkgs.appimageTools.wrapType2 {
       name = "everdo";
       src = fetchurl {
-        url = "https://release.everdo.net/1.8.5/Everdo-1.8.5.AppImage";
-        hash = "sha256-/DZ6CCJOS/lm5hzBailLOtrUDRyOEzVBDKwYmlFpsU8=";
+        url = "https://release.everdo.net/1.9.0/Everdo-1.9.0.AppImage";
+        hash = "sha256-0yxAzM+qmgm4E726QDYS9QwMdp6dUcuvjZzWYEZx7kU=";
       };
     }
     )

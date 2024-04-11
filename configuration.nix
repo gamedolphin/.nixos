@@ -211,6 +211,9 @@ in
       ];
     })
     mold # linker
+    nordic # theme
+    just # build runner
+    brightnessctl # screen brightness controller
   ];
 
   virtualisation.docker.enable = true;

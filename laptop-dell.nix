@@ -19,7 +19,14 @@ with lib;
     [ { device = "/dev/disk/by-uuid/26c40599-2710-4361-842c-7448e55af6cf"; }
     ];
 
-  services.fprintd.enable = true;
+  services.fprintd = {
+    enable = true;
+    package = pkgs.fprintd-tod;
+    tod = {
+      enable = true;
+      driver = pkgs.libfprint-2-tod1-goodix;
+    };
+  };
 
   home-manager.users.nambiar.home.file.hyprland-custom = {
     source = ./hyprland-laptop-dell.conf;
