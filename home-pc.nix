@@ -24,4 +24,6 @@ with lib;
     source = ./hyprland-home-pc.conf;
     target = ".config/hypr/hardware.conf";
   };
+
+  networking.hostName = "bigbox";
 }

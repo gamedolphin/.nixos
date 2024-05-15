@@ -92,7 +92,6 @@ in
   };
 
   networking = {
-    hostName = "bigbox";
     networkmanager.enable = true;
     firewall.enable = false;
   };
@@ -213,7 +212,12 @@ in
     mold # linker
     nordic # theme
     just # build runner
+    cargo-flamegraph # profiling
     brightnessctl # screen brightness controller
+    openvpn
+    terraform
+    cacert
+    nh
   ];
 
   virtualisation.docker.enable = true;
@@ -226,6 +230,7 @@ in
     NIXOS_OZONE_WL = "1";
     CARGO_TARGET_DIR = "/home/nambiar/.cargo/target";
     DOTNET_ROOT = "${dotnet_pkgs}";
+    FLAKE = "/home/nambiar/.nixos";
   };
 
   console.useXkbConfig = true;
@@ -279,6 +284,13 @@ in
       # for sway things
       services.swaylock = {};
       services.gdm.enableGnomeKeyring = true;
+
+      loginLimits = [{
+        domain = "*";
+        type = "soft";
+        item = "nofile";
+        value = "100000";
+      }];
     };
   };
 

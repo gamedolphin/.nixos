@@ -34,7 +34,6 @@ in
     blueman
     omnisharp-roslyn
     nomad
-
     (
     pkgs.appimageTools.wrapType2 {
       name = "everdo";
@@ -138,7 +137,7 @@ in
           height = 24;
           modules-left = [ "hyprland/workspaces" ];
           modules-center = [ "hyprland/window" ];
-          modules-right = [ "pulseaudio" "network" "cpu" "memory" "temperature" "clock" "tray" ];
+          modules-right = [ "pulseaudio" "network" "cpu" "memory" "temperature" "clock" "tray" "battery" ];
           "tray" = {
             spacing = 10;
           };

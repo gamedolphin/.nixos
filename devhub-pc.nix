@@ -13,6 +13,8 @@ with lib;
       fsType = "vfat";
     };
 
+  networking.hostName = "devhub";
+
   swapDevices =
     [ { device = "/dev/disk/by-uuid/f1485171-b780-4bae-b2ba-43946cd4b465"; }
     ];

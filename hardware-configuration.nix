@@ -9,10 +9,10 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];  
+  boot.initrd.kernelModules = [ ];
   boot.extraModulePackages = [ ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];  
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -39,9 +39,13 @@
         vaapiVdpau
         libvdpau-va-gl
         vulkan-validation-layers
+        rocmPackages_5.clr.icd
+        rocmPackages_5.rocminfo
+        rocmPackages_5.rocm-runtime
       ];
 
-   };
+    };
+
 
     nvidia = {
       modesetting.enable = true;
@@ -52,6 +56,10 @@
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
+  ];
 
   hardware.enableAllFirmware = true;
 

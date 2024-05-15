@@ -28,6 +28,8 @@ with lib;
     };
   };
 
+  networking.hostName = "laptopdell";
+
   home-manager.users.nambiar.home.file.hyprland-custom = {
     source = ./hyprland-laptop-dell.conf;
     target = ".config/hypr/hardware.conf";
