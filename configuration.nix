@@ -50,7 +50,7 @@ in
       efi.canTouchEfiVariables = true;
 
       grub = {
-        configurationLimit = 5;
+        configurationLimit = 50;
       };
 
       timeout = 5;

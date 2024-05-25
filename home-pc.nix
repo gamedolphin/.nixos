@@ -2,12 +2,12 @@
 with lib;
 {
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/b391aaf2-cf17-4119-8060-fe78efde6e4e";
+    { device = "/dev/disk/by-uuid/911d76da-1990-4e83-aefb-fa116e9cd0ee";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/3054-12FD";
+    { device = "/dev/disk/by-uuid/BAD3-5A84";
       fsType = "vfat";
     };
 
@@ -16,9 +16,7 @@ with lib;
       fsType = "ext4";
     };
 
-  swapDevices =
-    [ { device = "/dev/disk/by-uuid/b088731c-d5e0-4e5e-a5d9-9852dd619c95"; }
-    ];
+  swapDevices = [ ];
 
   home-manager.users.nambiar.home.file.hyprland-custom = {
     source = ./hyprland-home-pc.conf;
