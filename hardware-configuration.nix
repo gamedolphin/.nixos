@@ -12,7 +12,7 @@
   boot.initrd.kernelModules = [ ];
   boot.extraModulePackages = [ ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
+  boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" "nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
@@ -29,10 +29,8 @@
   hardware = {
     bluetooth.enable = true;
 
-    opengl = {
+    graphics = {
       enable = true;
-      driSupport = true;
-      driSupport32Bit = true;
       extraPackages = with pkgs; [
         intel-media-driver
         vaapiIntel
@@ -53,7 +51,7 @@
       powerManagement.finegrained = false;
       open = false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.production;
+      package = config.boot.kernelPackages.nvidiaPackages.beta;
     };
   };
 

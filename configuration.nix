@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hyprland-custom, ... }:
 
 with lib;
 
@@ -209,7 +209,7 @@ in
         libxkbcommon wayland # To use the wayland feature
       ];
     })
-    mold # linker
+    mold-wrapped # linker
     nordic # theme
     just # build runner
     cargo-flamegraph # profiling
@@ -218,6 +218,11 @@ in
     terraform
     cacert
     nh
+    transmission_4-gtk
+    gparted
+    lxqt.lxqt-policykit
+    upwork
+    llvmPackages.bintools
   ];
 
   virtualisation.docker.enable = true;
@@ -238,7 +243,7 @@ in
   users.users.${user} = {
     isNormalUser = true;
     description = "Sandeep Nambiar";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "wireshark" ];
     shell = pkgs.zsh;
   };
 
@@ -273,12 +278,20 @@ in
       ];
     };
 
+    file-roller.enable = true; # thunar zip support
+
     firefox.enable = true;
+    wireshark = {
+      enable = true;
+      package = pkgs.wireshark;
+    };
   };
 
   security = {
     # for pipewire
     rtkit.enable = true;
+
+    polkit.enable = true;
 
     pam = {
       # for sway things
