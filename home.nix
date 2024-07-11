@@ -84,6 +84,7 @@ in
       lfs.enable = true;
       enable = true;
       userName  = "gamedolphin";
+      userEmail = "7590634+gamedolphin@users.noreply.github.com";
     };
 
     alacritty = {
