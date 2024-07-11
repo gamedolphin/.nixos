@@ -2,13 +2,17 @@
   description = "Sandeep's nixos configuration";
 
   inputs = {
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.90.0.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     hyprland-pinned.url = "github:nixos/nixpkgs/179e0f110d859ec7f64c52de56de5b264d5db98a";
   };
 
-  outputs = { self, nixpkgs, home-manager, hyprland-pinned }:
+  outputs = { self, nixpkgs, lix-module, home-manager, hyprland-pinned }:
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs {
@@ -20,6 +24,7 @@
         inherit system;
       };
       common_modules = [
+        lix-module.nixosModules.default
         {
           nixpkgs.overlays = [
             (final: prev: {

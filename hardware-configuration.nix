@@ -37,9 +37,9 @@
         vaapiVdpau
         libvdpau-va-gl
         vulkan-validation-layers
-        rocmPackages_5.clr.icd
-        rocmPackages_5.rocminfo
-        rocmPackages_5.rocm-runtime
+        # rocmPackages_5.clr.icd
+        # rocmPackages_5.rocminfo
+        # rocmPackages_5.rocm-runtime
       ];
 
     };
@@ -55,9 +55,9 @@
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
-  ];
+  # systemd.tmpfiles.rules = [
+  #   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
+  # ];
 
   hardware.enableAllFirmware = true;
 

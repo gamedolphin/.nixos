@@ -218,7 +218,6 @@ in
     terraform
     cacert
     nh
-    transmission_4-gtk
     gparted
     lxqt.lxqt-policykit
     upwork
