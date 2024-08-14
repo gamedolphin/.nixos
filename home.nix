@@ -3,37 +3,24 @@
 with lib;
 let
   user = "nambiar";
-  i3_mod = "Mod4";
 in
 {
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";
-  home.stateVersion = "23.05";
+  home.stateVersion = "24.11";
 
   home.packages = with pkgs; [
     xdg-utils
     vlc
     discord
-    rustup
-    go
-    gopls
-    golangci-lint
-    gci
-    nodejs_20
-    mono
     vscode
     slack
-    glibc
     git
     git-lfs
     vim
     htop
     silver-searcher
-    gcc
     pavucontrol
-    blueman
-    omnisharp-roslyn
-    nomad
     (
     pkgs.appimageTools.wrapType2 {
       name = "everdo";
@@ -125,7 +112,7 @@ in
 
     emacs = {
       enable = true;
-      package = (pkgs.emacs29-pgtk.override { withTreeSitter = true; });
+      package = (pkgs.emacs-pgtk.override { withTreeSitter = true; });
       extraPackages = epkgs: [ epkgs.manualPackages.treesit-grammars.with-all-grammars ];
     };
 
@@ -191,20 +178,10 @@ in
       package = pkgs.elementary-xfce-icon-theme;
     };
     theme = {
-      name = "zukitre-dark";
-      package = pkgs.zuki-themes;
+      name = "nordic";
+      package = pkgs.nordic;
     };
   };
-
-  # home.pointerCursor = {
-  #   x11.enable = true;
-  #   gtk.enable = true;
-  #   package = pkgs.vanilla-dmz;
-  #   name = "Vanilla-DMZ";
-  #   size = 128;
-  # };
-
-
 
   home.file = {
     background = {

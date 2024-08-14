@@ -1,9 +1,11 @@
-;;; package --- early init
+;;; package --- early init -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;;; Prevents white flash and better Emacs defaults
 
 ;;; Code:
+(set-language-environment "UTF-8")
+
 (setq-default
  default-frame-alist
  '((background-color . "#3F3F3F")
@@ -22,7 +24,7 @@
  user-full-name "Sandeep Nambiar"                                        ; ME!
 
  ;; memory configuration
- gc-cons-threshold 10000000                                              ; Higher garbage collection threshold, prevents frequent gc locks
+ gc-cons-threshold most-positive-fixnum                                  ; Higher garbage collection threshold, prevents frequent gc locks
  byte-compile-warnings '(not obsolete)                                   ; Ignore warnings for (obsolete) elisp compilations
  warning-suppress-log-types '((comp) (bytecomp))                         ; And other log types completely
  large-file-warning-threshold 100000000                                  ; Large files are okay in the new millenium.
@@ -61,10 +63,14 @@
  tab-width 4                                                             ; Always tab 4 spaces.
  indent-tabs-mode nil                                                    ; Never use actual tabs.
 
+ cursor-in-non-selected-windows nil                                      ; dont render cursors in non-selected windows
+
  ;; custom
  custom-file (concat user-emacs-directory "custom.el")
 
  load-prefer-newer t
+
+ default-input-method nil
  )
 
 ;;; early-init.el ends here

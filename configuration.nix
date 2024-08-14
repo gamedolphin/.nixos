@@ -2,39 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, hyprland-custom, ... }:
+{ pkgs, lib, ... }:
 
 with lib;
 
 let
   user = "nambiar";
-  ld_path_libs = with pkgs; [
-    openssl_1_1
-    udev
-    alsa-lib
-    vulkan-loader
-    xorg.libX11
-    xorg.libXcursor
-    xorg.libXi
-    xorg.libXrandr # To use the x11 feature
-    libxkbcommon wayland # To use the wayland feature
-  ];
-
-  unityhub-local = (pkgs.callPackage ./unityhub { });
-  unityhub-rusty = unityhub-local.overrideAttrs (prevAttrs: {
-    nativeBuildInputs = (prevAttrs.nativeBuildInputs or []) ++ [ pkgs.makeWrapper pkgs.pkg-config ];
-    buildInputs = (prevAttrs.buildInputs or []) ++ ld_path_libs;
-
-    postInstall = prevAttrs.postInstall or "" + ''
-      wrapProgram "$out/bin/unityhub" --set LD_LIBRARY_PATH ${lib.makeLibraryPath ld_path_libs}
-    '';
-  });
-
-  dotnet_pkgs = (with pkgs.dotnetCorePackages; combinePackages [
-      sdk_6_0
-      sdk_7_0
-      sdk_8_0
-    ]);
 in
 {
   imports =
@@ -82,9 +55,6 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1w"
-  ];
   nix.gc = {
     automatic = true;
     options = "--delete-older-than 7d";
@@ -93,7 +63,7 @@ in
 
   networking = {
     networkmanager.enable = true;
-    firewall.enable = false;
+    firewall.enable = true;
   };
 
   services = {
@@ -165,7 +135,6 @@ in
     dmidecode
     usbutils
     elementary-xfce-icon-theme
-    zuki-themes
     dunst
     libnotify
     swww
@@ -175,12 +144,10 @@ in
     swaylock
     pamixer
     audacity
-    appimage-run
     zoom-us
     cmake
     gnumake
     udiskie
-    ollama
     handbrake
     davinci-resolve
     sway-contrib.grimshot
@@ -189,31 +156,9 @@ in
     gcc
     clang
     clang-tools_16
-    bear
     python3
-    graphviz
-    tailwindcss
-    sqlitebrowser
-    dotnet_pkgs
-    (unityhub-rusty.override {
-      extraLibs = pkgs: with pkgs; [
-        openssl_1_1
-        pkg-config
-        udev
-        alsa-lib
-        vulkan-loader
-        xorg.libX11
-        xorg.libXcursor
-        xorg.libXi
-        xorg.libXrandr # To use the x11 feature
-        libxkbcommon wayland # To use the wayland feature
-      ];
-    })
-    mold-wrapped # linker
+    unityhub
     nordic # theme
-    just # build runner
-    cargo-flamegraph # profiling
-    brightnessctl # screen brightness controller
     openvpn
     terraform
     cacert
@@ -222,6 +167,8 @@ in
     lxqt.lxqt-policykit
     upwork
     llvmPackages.bintools
+    nil
+    omnisharp-roslyn
   ];
 
   virtualisation.docker.enable = true;
@@ -229,11 +176,8 @@ in
   environment.sessionVariables = {
     XCURSOR_SIZE = "132";
     EDITOR = "emacs";
-    FrameworkPathOverride="${pkgs.mono}/lib/mono/4.5";
     WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
-    CARGO_TARGET_DIR = "/home/nambiar/.cargo/target";
-    DOTNET_ROOT = "${dotnet_pkgs}";
     FLAKE = "/home/nambiar/.nixos";
   };
 
@@ -249,7 +193,6 @@ in
   environment.shells = with pkgs; [ zsh ];
 
   programs = {
-    nix-ld.enable = true; # for dotnet linking
     hyprland = {
       enable = true;
       xwayland.enable = true;
@@ -262,6 +205,8 @@ in
       remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
       dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     };
+
+    appimage.enable = true;
 
     dconf.enable = true;
     gnupg.agent = {
@@ -308,5 +253,5 @@ in
 
   fonts.packages = [pkgs.iosevka];
 
-  system.stateVersion = "23.05";
+  system.stateVersion = "24.11";
 }

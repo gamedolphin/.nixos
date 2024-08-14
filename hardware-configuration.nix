@@ -37,9 +37,6 @@
         vaapiVdpau
         libvdpau-va-gl
         vulkan-validation-layers
-        # rocmPackages_5.clr.icd
-        # rocmPackages_5.rocminfo
-        # rocmPackages_5.rocm-runtime
       ];
 
     };
@@ -54,10 +51,6 @@
       package = config.boot.kernelPackages.nvidiaPackages.beta;
     };
   };
-
-  # systemd.tmpfiles.rules = [
-  #   "L+    /opt/rocm/hip   -    -    -     -    ${pkgs.rocmPackages_5.clr}"
-  # ];
 
   hardware.enableAllFirmware = true;
 

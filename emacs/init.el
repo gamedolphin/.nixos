@@ -1,4 +1,4 @@
-;;; package --- Summary - My minimal Emacs init file
+;;; package --- Summary - My minimal Emacs init file -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;;; Simple Emacs setup I carry everywhere
@@ -34,19 +34,12 @@
   (electric-pair-mode)                 ;; i mean ... parens should auto create
   (recentf-mode)                       ;; keep track of recently opened files
 
-  ;; UTF-8 EVERYWHERE
-  (prefer-coding-system       'utf-8)
-  (set-default-coding-systems 'utf-8)
-  (set-terminal-coding-system 'utf-8)
-  (set-keyboard-coding-system 'utf-8)
-  (set-language-environment   'utf-8)
-
   (set-frame-font "Iosevka Semibold 12" nil t) ;; font of the century
 
   :bind
   (("C-<wheel-up>"   . pixel-scroll-precision) ; dont zoom in please, just scroll
    ("C-<wheel-down>" . pixel-scroll-precision) ; dont zoom in either, just scroll
-   ("C-x k"          . kill-this-buffer))      ; kill the buffer, dont ask
+   ("C-x k"          . kill-current-buffer))   ; kill the buffer, dont ask
   )
 
 (use-package nerd-icons
@@ -318,55 +311,18 @@
   (typescript-indent-level 2)
   (typescript-ts-mode-indent-offset 2))
 
-(use-package jtsx
-  :ensure t
-  :mode (("\\.jsx?\\'" . jtsx-jsx-mode)
-         ("\\.tsx?\\'" . jtsx-tsx-mode))
-  :commands jtsx-install-treesit-language jtsx-bind-keys-to-mode-map
-  :defines jtsx-jsx-mode-map jtsx-tsx-mode-map
-  :hook ((jtsx-jsx-mode . hs-minor-mode)
-         (jtsx-tsx-mode . hs-minor-mode))
-  :custom
-  ;; Optional customizations
-  (js-indent-level 2)
-  (typescript-ts-mode-indent-offset 2)
-  (jtsx-switch-indent-offset 0)
-  (jtsx-indent-statement-block-regarding-standalone-parent nil)
-  (jtsx-jsx-element-move-allow-step-out t)
-  (jtsx-enable-jsx-electric-closing-element t)
-  (jtsx-enable-electric-open-newline-between-jsx-element-tags t)
-  (jtsx-enable-jsx-element-tags-auto-sync nil)
-  (jtsx-enable-all-syntax-highlighting-features t)
-  :config
-  (defun jtsx-bind-keys-to-mode-map (mode-map)
-    "Bind keys to MODE-MAP."
-    (define-key mode-map (kbd "C-c C-j") 'jtsx-jump-jsx-element-tag-dwim)
-    (define-key mode-map (kbd "C-c j o") 'jtsx-jump-jsx-opening-tag)
-    (define-key mode-map (kbd "C-c j c") 'jtsx-jump-jsx-closing-tag)
-    (define-key mode-map (kbd "C-c j r") 'jtsx-rename-jsx-element)
-    (define-key mode-map (kbd "C-c <down>") 'jtsx-move-jsx-element-tag-forward)
-    (define-key mode-map (kbd "C-c <up>") 'jtsx-move-jsx-element-tag-backward)
-    (define-key mode-map (kbd "C-c C-<down>") 'jtsx-move-jsx-element-forward)
-    (define-key mode-map (kbd "C-c C-<up>") 'jtsx-move-jsx-element-backward)
-    (define-key mode-map (kbd "C-c C-S-<down>") 'jtsx-move-jsx-element-step-in-forward)
-    (define-key mode-map (kbd "C-c C-S-<up>") 'jtsx-move-jsx-element-step-in-backward)
-    (define-key mode-map (kbd "C-c j w") 'jtsx-wrap-in-jsx-element)
-    (define-key mode-map (kbd "C-c j u") 'jtsx-unwrap-jsx)
-    (define-key mode-map (kbd "C-c j d") 'jtsx-delete-jsx-node))
-
-  (defun jtsx-bind-keys-to-jtsx-jsx-mode-map ()
-      (jtsx-bind-keys-to-mode-map jtsx-jsx-mode-map))
-
-  (defun jtsx-bind-keys-to-jtsx-tsx-mode-map ()
-      (jtsx-bind-keys-to-mode-map jtsx-tsx-mode-map))
-
-  (add-hook 'jtsx-jsx-mode-hook 'jtsx-bind-keys-to-jtsx-jsx-mode-map)
-  (add-hook 'jtsx-tsx-mode-hook 'jtsx-bind-keys-to-jtsx-tsx-mode-map))
-
 (use-package nix-mode)
 (use-package eat)
 (use-package hcl-mode)
 (use-package jinja2-mode)
+
+(use-package envrc
+  :commands envrc-global-mode
+  :config (envrc-global-mode))
+
+(use-package nix-mode
+  :hook (nix-mode . lsp-deferred)
+  :ensure t)
 
 (provide 'init)
 ;;; init.el ends here
