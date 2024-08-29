@@ -1,8 +1,9 @@
-{ configs, pkgs, lib, ...}:
+{ pkgs, lib, ...}:
 
 with lib;
 let
   user = "nambiar";
+  lockCmd = "${pkgs.swaylock}/bin/swaylock --image ~/.nixos/lock.png";
 in
 {
   home.username = "${user}";
@@ -10,6 +11,18 @@ in
   home.stateVersion = "24.11";
 
   home.packages = with pkgs; [
+    nordzy-icon-theme
+    nordzy-cursor-theme
+    audacity
+    zoom-us
+    handbrake
+    davinci-resolve
+    sway-contrib.grimshot
+    unityhub
+    nordic # theme
+    upwork
+    nil
+    omnisharp-roslyn
     xdg-utils
     vlc
     discord
@@ -21,31 +34,59 @@ in
     htop
     silver-searcher
     pavucontrol
-    (
-    pkgs.appimageTools.wrapType2 {
-      name = "everdo";
-      src = fetchurl {
-        url = "https://release.everdo.net/1.9.0/Everdo-1.9.0.AppImage";
-        hash = "sha256-0yxAzM+qmgm4E726QDYS9QwMdp6dUcuvjZzWYEZx7kU=";
-      };
-    }
-    )
+    everdo
+    wlogout
+    swayidle
+    swaylock
+    dunst
+    mold
   ];
 
-  xdg.desktopEntries = {
-    everdo = {
-      name = "Everdo";
-      genericName = "Todos";
-      exec = "everdo";
-      terminal = false;
-      categories = [ "Office" ];
-    };
-  };
-
   services.dunst.enable = true;
-  services.swayidle.enable = true;
 
   programs = {
+    wlogout = {
+      enable = true;
+      layout = [
+        {
+          "label"  = "lock";
+          "action" = lockCmd;
+          "text" = "Lock";
+          "keybind" = "l";
+        }
+        {
+          "label" = "hibernate";
+          "action" = "systemctl hibernate";
+          "text" = "Hibernate";
+          "keybind" = "h";
+        }
+        {
+          "label" = "logout";
+          "action" = "loginctl terminate-user $USER";
+          "text" = "Logout";
+          "keybind" = "e";
+        }
+        {
+          "label" = "shutdown";
+          "action" = "systemctl poweroff";
+          "text" = "Shutdown";
+          "keybind" = "s";
+        }
+        {
+          "label" = "suspend";
+          "action" = "${lockCmd} & systemctl suspend";
+          "text" = "Suspend";
+          "keybind" = "u";
+        }
+        {
+          "label" = "reboot";
+          "action" = "systemctl reboot";
+          "text" = "Reboot";
+          "keybind" = "r";
+        }
+      ];
+    };
+
     direnv = {
       enable = true;
       enableZshIntegration = true;
@@ -54,6 +95,14 @@ in
 
     swaylock = {
       enable = true;
+      settings = {
+        color = "808080";
+        font-size = 24;
+        indicator-idle-visible = false;
+        indicator-radius = 100;
+        line-color = "ffffff";
+        show-failed-attempts = true;
+      };
     };
 
     obs-studio.enable = true;
@@ -130,6 +179,7 @@ in
             spacing = 10;
           };
           "clock" = {
+            format =  "{:%Y-%m-%d %H:%M:%S}";
             tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
             format-alt =  "{:%Y-%m-%d}";
           };
@@ -174,12 +224,16 @@ in
   gtk = {
     enable = true;
     iconTheme = {
-      name = "elementary-Xfce-dark";
-      package = pkgs.elementary-xfce-icon-theme;
+      name = "Nordzy-icon";
+      package = pkgs.nordzy-icon-theme;
     };
     theme = {
-      name = "nordic";
+      name = "Nordic";
       package = pkgs.nordic;
+    };
+    cursorTheme = {
+      name = "Nordzy-cursors";
+      package = pkgs.nordzy-cursor-theme;
     };
   };
 
@@ -208,12 +262,6 @@ in
       source = ./tofi-config;
       target = ".config/tofi/config";
     };
-
-    ".cargo/config.toml".text = ''
-    [target.x86_64-unknown-linux-gnu]
-    linker = "clang"
-    rustflags = ["-C", "link-arg=-fuse-ld=${pkgs.mold-wrapped}/bin/mold"]
-    '';
   };
 
   home.sessionPath = [

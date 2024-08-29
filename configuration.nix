@@ -134,49 +134,30 @@ in
     binutils
     dmidecode
     usbutils
-    elementary-xfce-icon-theme
-    dunst
     libnotify
     swww
     kitty
     tofi
     killall
-    swaylock
     pamixer
-    audacity
-    zoom-us
     cmake
     gnumake
     udiskie
-    handbrake
-    davinci-resolve
-    sway-contrib.grimshot
     steam-run
     glibc
-    gcc
-    clang
-    clang-tools_16
     python3
-    unityhub
-    nordic # theme
     openvpn
-    terraform
     cacert
     nh
     gparted
     lxqt.lxqt-policykit
-    upwork
-    llvmPackages.bintools
-    nil
-    omnisharp-roslyn
   ];
 
   virtualisation.docker.enable = true;
 
   environment.sessionVariables = {
-    XCURSOR_SIZE = "132";
+    XCURSOR_SIZE = "24";
     EDITOR = "emacs";
-    WLR_NO_HARDWARE_CURSORS = "1";
     NIXOS_OZONE_WL = "1";
     FLAKE = "/home/nambiar/.nixos";
   };
@@ -193,6 +174,8 @@ in
   environment.shells = with pkgs; [ zsh ];
 
   programs = {
+    nix-ld.enable = true;
+
     hyprland = {
       enable = true;
       xwayland.enable = true;

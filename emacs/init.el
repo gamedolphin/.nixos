@@ -324,5 +324,9 @@
   :hook (nix-mode . lsp-deferred)
   :ensure t)
 
+(use-package shell-pop
+  :custom
+  (shell-pop-universal-key "M-o"))
+
 (provide 'init)
 ;;; init.el ends here
