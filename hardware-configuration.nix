@@ -8,11 +8,20 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
-  boot.extraModulePackages = [ ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" ];
+  boot = {
+    initrd = {
+      availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
+      verbose = false;
+      kernelModules = [ ];
+    };
+
+    extraModulePackages = [ ];
+    kernelPackages = pkgs.linuxPackages_latest;
+    kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "silent"];
+
+    consoleLogLevel = 0;
+    plymouth.enable = true;
+  };
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
