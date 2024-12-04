@@ -16,7 +16,7 @@
     };
 
     extraModulePackages = [ ];
-    kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_6_10;
     kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "silent"];
 
     consoleLogLevel = 0;
@@ -36,6 +36,11 @@
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   hardware = {
+    # scanner
+    sane = { 
+      enable = true;      
+    };
+    
     bluetooth.enable = true;
 
     graphics = {
@@ -57,7 +62,7 @@
       powerManagement.finegrained = false;
       open = false;
       nvidiaSettings = true;
-      package = config.boot.kernelPackages.nvidiaPackages.beta;
+      package = config.boot.kernelPackages.nvidiaPackages.latest;
     };
   };
 

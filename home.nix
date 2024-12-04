@@ -18,11 +18,19 @@ in
     handbrake
     davinci-resolve
     sway-contrib.grimshot
-    unityhub
+    (pkgs.unityhub.override {
+      extraPkgs = pkgs: with pkgs; [
+        openssl_1_1
+        vulkan-headers
+        vulkan-loader
+        vulkan-tools
+        vulkan-validation-layers
+        lldb
+      ];
+    })
     nordic # theme
     upwork
-    nil
-    omnisharp-roslyn
+    nil    
     xdg-utils
     vlc
     discord
@@ -40,9 +48,21 @@ in
     swaylock
     dunst
     mold
+    spotify
+    simple-scan
+    p7zip
   ];
 
   services.dunst.enable = true;
+
+  xdg.desktopEntries = {
+    spotify = {
+      name = "Spotify";
+      exec = "spotify";
+      terminal = false;
+      categories = [ "Application" ];
+    };
+  };
 
   programs = {
     wlogout = {
@@ -162,7 +182,11 @@ in
     emacs = {
       enable = true;
       package = (pkgs.emacs-pgtk.override { withTreeSitter = true; });
-      extraPackages = epkgs: [ epkgs.manualPackages.treesit-grammars.with-all-grammars ];
+      extraPackages = epkgs: [
+        epkgs.manualPackages.treesit-grammars.with-all-grammars
+        pkgs.nodejs
+        pkgs.omnisharp-roslyn        
+      ];
     };
 
     waybar = {

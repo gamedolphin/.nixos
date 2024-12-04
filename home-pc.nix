@@ -18,6 +18,9 @@ with lib;
 
   swapDevices = [ ];
 
+  hardware.sane.extraBackends = [ pkgs.sane-airscan pkgs.utsushi ];
+  services.udev.packages = [ pkgs.utsushi ]; # scanner backend for epson
+
   home-manager.users.nambiar.home.file.hyprland-custom = {
     source = ./hyprland-home-pc.conf;
     target = ".config/hypr/hardware.conf";

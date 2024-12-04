@@ -18,8 +18,6 @@
   (global-auto-revert-mode t)          ;; revert automatically on external file changes
   (savehist-mode)                      ;; save minibuffer history
 
-  (add-hook 'before-save-hook 'whitespace-cleanup) ;; always cleanup whitespace on save
-
   ;; base visual
   (menu-bar-mode -1)                   ;; no menu bar
   (toggle-scroll-bar -1)               ;; no scroll bar
@@ -42,11 +40,10 @@
    ("C-x k"          . kill-current-buffer))   ; kill the buffer, dont ask
   )
 
-(use-package nerd-icons
-  :defer t
+(use-package nerd-icons :defer t
   :custom
-  (nerd-icons-color-icons nil) ;; disable bright icon colors
-  )
+  ;; disable bright icon colors
+  (nerd-icons-color-icons nil))
 
 (use-package doom-modeline
   :custom
@@ -70,6 +67,11 @@
 (use-package diminish :defer t)                   ;; declutter the modeline
 (use-package eldoc :defer t :diminish eldoc-mode) ;; docs for everything
 
+(use-package whitespace-cleanup-mode
+  :commands global-whitespace-cleanup-mode
+  :config
+  (global-whitespace-cleanup-mode))
+
 (use-package pulsar
   :commands pulsar-global-mode pulsar-recenter-top pulsar-reveal-entry
   :init
@@ -84,8 +86,7 @@
     :group 'pulsar-faces)
   (pulsar-global-mode)
   :custom
-  (pulsar-face 'pulsar-nord)
-  )
+  (pulsar-face 'pulsar-nord))
 
 (use-package which-key
   :commands which-key-mode
@@ -120,25 +121,6 @@
   ("M-g M-g" . consult-goto-line)  ;; orig. goto-line
   :custom
   (consult-narrow-key "<"))
-
-(use-package embark
-  :commands embark-prefix-help-command
-  :bind
-  ("C-'" . embark-act)
-  ("C-;" . embark-dwim)
-  ("C-h B" . embark-bindings)
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
-  :config
-  (add-to-list 'display-buffer-alist
-               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
-                 nil
-                 (window-parameters (mode-line-format . none)))))
-
-(use-package embark-consult
-  :defer t
-  :hook
-  (embark-collect-mode . consult-preview-at-point-mode))
 
 (use-package vertico
   :defer t
@@ -318,7 +300,7 @@
 
 (use-package envrc
   :commands envrc-global-mode
-  :config (envrc-global-mode))
+  :hook (after-init . envrc-global-mode))
 
 (use-package nix-mode
   :hook (nix-mode . lsp-deferred)
@@ -327,6 +309,28 @@
 (use-package shell-pop
   :custom
   (shell-pop-universal-key "M-o"))
+
+(use-package copilot
+  :vc (:url "https://github.com/copilot-emacs/copilot.el"
+            :rev :newest
+            :branch "main")
+  :hook
+  (prog-mode . copilot-mode)
+  :defines copilot-completion-map
+  :bind
+  (:map copilot-completion-map
+        ("<tab>" . copilot-accept-completion)
+        ("M-n" . copilot-next-completion)
+        ("M-p" . copilot-previous-completion)
+        ("C-g" . copilot-clear-overlay)))
+
+(use-package f :ensure t) ;; string utilities
+
+(use-package gptel
+  :commands gptel-make-anthropic f-read-text
+  :config
+  (gptel-make-anthropic "Claude"
+    :stream t :key (f-read-text "~/.nixos/emacs/claude-key")))
 
 (provide 'init)
 ;;; init.el ends here

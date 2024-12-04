@@ -32,8 +32,11 @@ in
 
   nix.settings = {
     experimental-features = ["nix-command" "flakes"];
-    substituters = ["https://hyprland.cachix.org"];
-    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+    substituters = ["https://hyprland.cachix.org" "https://nix-community.cachix.org"];
+    trusted-public-keys = [
+      "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+    ];
   };
 
   # Set your time zone.
@@ -55,6 +58,9 @@ in
   };
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.permittedInsecurePackages = [
+    "openssl-1.1.1w"
+  ];
   nix.gc = {
     automatic = true;
     options = "--delete-older-than 7d";
@@ -163,9 +169,33 @@ in
     lxqt.lxqt-policykit
     greetd.tuigreet
     openssl
+    vulkan-headers
+    vulkan-loader
+    vulkan-tools
+    virt-viewer
+    spice spice-gtk
+    spice-protocol
+    win-virtio
+    win-spice
   ];
 
-  virtualisation.docker.enable = true;
+  virtualisation = {
+    docker.enable = true;
+    virtualbox.host.enable = true;
+
+    libvirtd = {
+      enable = true;
+      qemu = {
+        swtpm.enable = true;
+        ovmf.enable = true;
+        ovmf.packages = [ pkgs.OVMFFull.fd ];
+      };
+    };
+    spiceUSBRedirection.enable = true;
+  };
+  services.spice-vdagentd.enable = true;
+
+  users.extraGroups.vboxusers.members = [ "nambiar" ];
 
   environment.sessionVariables = {
     XCURSOR_SIZE = "24";
@@ -179,7 +209,7 @@ in
   users.users.${user} = {
     isNormalUser = true;
     description = "Sandeep Nambiar";
-    extraGroups = [ "networkmanager" "wheel" "docker" "wireshark" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "wireshark" "scanner" "lp" "libvirtd"];
     shell = pkgs.zsh;
   };
 
@@ -187,6 +217,8 @@ in
 
   programs = {
     nix-ld.enable = true;
+
+    virt-manager.enable = true;
 
     hyprland = {
       enable = true;

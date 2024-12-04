@@ -11,14 +11,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    emacs-overlay = {
-      url = "github:nix-community/emacs-overlay/0b13bb572b5495a3c8ebfb86defd4d6c5b71f001";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
   };
 
-  outputs = { self, nixpkgs, lix-module, home-manager, ... }:
+  outputs = { nixpkgs, lix-module, home-manager, emacs-overlay, ... } :
     let
       system = "x86_64-linux";
       lib = nixpkgs.lib;
@@ -26,7 +22,7 @@
         lix-module.nixosModules.default
         {
           nixpkgs.overlays = [
-            (import self.inputs.emacs-overlay)
+            emacs-overlay.overlays.default
            ];
         }
         ./configuration.nix
