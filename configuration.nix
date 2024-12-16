@@ -2,12 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ pkgs, lib, ... }:
+{ pkgs, lib, user, stateVersion, ... }:
 
 with lib;
 
 let
-  user = "nambiar";
+  locale = "sv_SE.UTF-8";
 in
 {
   imports =
@@ -46,20 +46,20 @@ in
   i18n.defaultLocale = "en_US.UTF-8";
 
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "sv_SE.UTF-8";
-    LC_IDENTIFICATION = "sv_SE.UTF-8";
-    LC_MEASUREMENT = "sv_SE.UTF-8";
-    LC_MONETARY = "sv_SE.UTF-8";
-    LC_NAME = "sv_SE.UTF-8";
-    LC_NUMERIC = "sv_SE.UTF-8";
-    LC_PAPER = "sv_SE.UTF-8";
-    LC_TELEPHONE = "sv_SE.UTF-8";
-    LC_TIME = "sv_SE.UTF-8";
+    LC_ADDRESS = locale;
+    LC_IDENTIFICATION = locale;
+    LC_MEASUREMENT = locale;
+    LC_MONETARY = locale;
+    LC_NAME = locale;
+    LC_NUMERIC = locale;
+    LC_PAPER = locale;
+    LC_TELEPHONE = locale;
+    LC_TIME = locale;
   };
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.1.1w"
+    "openssl-1.1.1w" #for unity 2021
   ];
   nix.gc = {
     automatic = true;
@@ -96,8 +96,7 @@ in
       enable = true;
       settings = {
         default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a • %h | %F' --cmd Hyprland";
-          user = "nambiar";
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --time-format '%I:%M %p | %a • %h | %F' --cmd 'uwsm start hyprland-uwsm.desktop'";
         };
       };
     };
@@ -111,16 +110,7 @@ in
 
       displayManager = {
         lightdm.background = ./lock.png;
-        # gdm = {
-        #   enable = true;
-        #   wayland = true;
-        # };
       };
-
-      xkb.layout = "us";
-      xkb.options = "ctrl:nocaps";
-      xkb.variant = "";
-      dpi = 196;
     };
 
     pipewire = {
@@ -156,8 +146,6 @@ in
     tofi
     killall
     pamixer
-    cmake
-    gnumake
     udiskie
     steam-run
     glibc
@@ -172,36 +160,22 @@ in
     vulkan-headers
     vulkan-loader
     vulkan-tools
-    virt-viewer
-    spice spice-gtk
-    spice-protocol
-    win-virtio
-    win-spice
+    uwsm
+    hyprland
   ];
 
   virtualisation = {
     docker.enable = true;
-    virtualbox.host.enable = true;
-
-    libvirtd = {
-      enable = true;
-      qemu = {
-        swtpm.enable = true;
-        ovmf.enable = true;
-        ovmf.packages = [ pkgs.OVMFFull.fd ];
-      };
-    };
-    spiceUSBRedirection.enable = true;
   };
-  services.spice-vdagentd.enable = true;
-
-  users.extraGroups.vboxusers.members = [ "nambiar" ];
 
   environment.sessionVariables = {
     XCURSOR_SIZE = "24";
     EDITOR = "emacs";
     NIXOS_OZONE_WL = "1";
-    FLAKE = "/home/nambiar/.nixos";
+    XCURSOR_THEME = "Nordzy-cursors";
+    HYPRCURSOR_THEME = "Nordzy-cursors";
+    HYPRCURSOR_SIZE = "24";
+    FLAKE = "/home/${user}/.nixos";
   };
 
   console.useXkbConfig = true;
@@ -209,18 +183,26 @@ in
   users.users.${user} = {
     isNormalUser = true;
     description = "Sandeep Nambiar";
-    extraGroups = [ "networkmanager" "wheel" "docker" "wireshark" "scanner" "lp" "libvirtd"];
+    extraGroups = [ "networkmanager" "wheel" "docker" "wireshark" "scanner" "lp"];
     shell = pkgs.zsh;
   };
 
   environment.shells = with pkgs; [ zsh ];
 
   programs = {
+    uwsm.enable = true;
+    uwsm.waylandCompositors = {
+      hyprland = {
+        prettyName = "Hyprland";
+        comment = "Hyprland compositor managed by UWSM";
+        binPath = "/run/current-system/sw/bin/Hyprland";
+      };
+    };
+    
     nix-ld.enable = true;
 
-    virt-manager.enable = true;
-
     hyprland = {
+      withUWSM  = true;
       enable = true;
       xwayland.enable = true;
     };
@@ -252,10 +234,7 @@ in
     file-roller.enable = true; # thunar zip support
 
     firefox.enable = true;
-    wireshark = {
-      enable = true;
-      package = pkgs.wireshark;
-    };
+    wireshark.enable = true;
   };
 
   security = {
@@ -280,5 +259,5 @@ in
 
   fonts.packages = [pkgs.iosevka];
 
-  system.stateVersion = "24.11";
+  system.stateVersion = stateVersion;
 }

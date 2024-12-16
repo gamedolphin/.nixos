@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-with lib;
+{ pkgs, lib, user, ... }:
 {
   boot.initrd.availableKernelModules = [ "vmd" "xhci_pci" "thunderbolt" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" ];
   boot.kernelParams = lib.mkDefault [ "acpi_rev_override" "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
@@ -30,7 +29,7 @@ with lib;
 
   networking.hostName = "laptopdell";
 
-  home-manager.users.nambiar.home.file.hyprland-custom = {
+  home-manager.users.${user}.home.file.hyprland-custom = {
     source = ./hyprland-laptop-dell.conf;
     target = ".config/hypr/hardware.conf";
   };

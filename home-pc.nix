@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-with lib;
+{  pkgs, user, ... }:
 {
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/911d76da-1990-4e83-aefb-fa116e9cd0ee";
@@ -21,7 +20,7 @@ with lib;
   hardware.sane.extraBackends = [ pkgs.sane-airscan pkgs.utsushi ];
   services.udev.packages = [ pkgs.utsushi ]; # scanner backend for epson
 
-  home-manager.users.nambiar.home.file.hyprland-custom = {
+  home-manager.users.${user}.home.file.hyprland-custom = {
     source = ./hyprland-home-pc.conf;
     target = ".config/hypr/hardware.conf";
   };

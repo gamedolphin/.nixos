@@ -1,14 +1,12 @@
-{ pkgs, lib, ...}:
-
+{ pkgs, lib, user, stateVersion, ...}:
 with lib;
 let
-  user = "nambiar";
   lockCmd = "${pkgs.swaylock}/bin/swaylock --image ~/.nixos/lock.png";
 in
 {
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";
-  home.stateVersion = "24.11";
+  home.stateVersion = stateVersion;
 
   home.packages = with pkgs; [
     nordzy-icon-theme
@@ -30,7 +28,7 @@ in
     })
     nordic # theme
     upwork
-    nil    
+    nil
     xdg-utils
     vlc
     discord
@@ -51,6 +49,8 @@ in
     spotify
     simple-scan
     p7zip
+    wl-clipboard
+    cliphist
   ];
 
   services.dunst.enable = true;
@@ -148,7 +148,7 @@ in
       settings = {
         font.normal.family = "Iosevka";
         font.size = 12;
-        shell.program = "zsh";
+        terminal.shell.program = "zsh";
 
         window = {
           padding.x = 4;
@@ -185,7 +185,7 @@ in
       extraPackages = epkgs: [
         epkgs.manualPackages.treesit-grammars.with-all-grammars
         pkgs.nodejs
-        pkgs.omnisharp-roslyn        
+        pkgs.omnisharp-roslyn
       ];
     };
 
@@ -287,10 +287,6 @@ in
       target = ".config/tofi/config";
     };
   };
-
-  home.sessionPath = [
-      "$HOME/.cargo/bin"
-  ];
 
   programs.home-manager.enable =  true;
 }

@@ -4,7 +4,7 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     lix-module = {
-      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.0.tar.gz";
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.91.1-2.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     home-manager = {
@@ -17,6 +17,8 @@
   outputs = { nixpkgs, lix-module, home-manager, emacs-overlay, ... } :
     let
       system = "x86_64-linux";
+      user = "nambiar";
+      stateVersion = "25.05";
       lib = nixpkgs.lib;
       common_modules = [
         lix-module.nixosModules.default
@@ -30,7 +32,10 @@
         {
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
-          home-manager.users.nambiar = {
+          home-manager.extraSpecialArgs = {
+            inherit user stateVersion;
+          };
+          home-manager.users.${user} = {
             imports =  [./home.nix];
           };
         }
@@ -39,6 +44,9 @@
       nixosConfigurations = {
         bigbox = lib.nixosSystem {
           inherit system;
+          specialArgs = {
+            inherit user stateVersion;
+          };
           modules = common_modules ++ [./home-pc.nix];
         };
 

@@ -178,20 +178,6 @@
         completion-category-defaults nil
         completion-category-overrides nil))
 
-(use-package treesit-auto :defer t
-  :ensure t
-  :functions global-treesit-auto-mode
-  :mode
-  ("\\.rs\\'" . rust-ts-mode)
-  ("\\.ts\\'" . typescript-ts-mode)
-  ("\\.go\\'" . go-ts-mode)
-  ("\\.cs\\'" . csharp-ts-mode)
-  ("\\.cpp\\'" . c++-ts-mode)
-  ("\\.h\\'" . c++-ts-mode)
-  ("\\.hpp\\'" . c++-ts-mode)
-  :config
-  (global-treesit-auto-mode))
-
 (use-package yasnippet
   :commands yas-global-mode
   :defer t
@@ -264,7 +250,7 @@
   (lsp-mode . lsp-enable-which-key-integration)
   (before-save . lsp-cleanup)
   (c++-ts-mode . lsp-deferred)
-  (rust-ts-mode . lsp-deferred)
+  (rust--mode . lsp-deferred)
   (go-ts-mode . lsp-deferred)
   (typescript-ts-mode . lsp-deferred)
   (csharp-ts-mode . lsp-deferred))
@@ -279,12 +265,26 @@
   (lsp-eldoc-enable-hover nil)
   )
 
-(use-package rust-ts-mode
-  :defer t
+(use-package rust-mode
   :custom
+  (rust-mode-treesitter-derive t)
   (lsp-rust-analyzer-cargo-watch-command "clippy")
-  (lsp-rust-analyzer-exclude-dirs ["Temp/**"])
-  )
+  (lsp-rust-analyzer-exclude-dirs ["Temp/**"]))
+
+(use-package treesit-auto :defer t
+  :ensure t
+  :functions global-treesit-auto-mode
+  :mode
+  ("\\.rs\\'" . rust-mode)
+  ("\\.ts\\'" . typescript-ts-mode)
+  ("\\.go\\'" . go-ts-mode)
+  ("\\.cs\\'" . csharp-ts-mode)
+  ("\\.cpp\\'" . c++-ts-mode)
+  ("\\.h\\'" . c++-ts-mode)
+  ("\\.hpp\\'" . c++-ts-mode)
+  :config
+  (global-treesit-auto-mode))
+
 
 (use-package typescript-ts-mode
   :defer t
